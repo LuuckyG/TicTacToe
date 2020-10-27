@@ -7,16 +7,17 @@ class GameView:
     RED = (255, 0, 0)
     BLUE = (0, 0, 255)
     BLACK = (0, 0, 0)
+    LIGHT_GRAY = (225, 225, 225)
     GREEN = (0, 255, 0)
 
     def __init__(self, tile_size, board, border=20, line_width=5):
         """Set up of start screen
            
             Args:
-            - tile_size:
-            - board:
-            - border:
-            - line_width:
+            - tile_size: width of a tile (in px)
+            - board: TicTacToe game board
+            - border: border around game
+            - line_width: Thickness of lines, for drawing the board and the symbols
         """    
         
         # Initialise pygame
@@ -29,47 +30,56 @@ class GameView:
         self.line_width = line_width
 
         # Create screen
-        self.offset = (self.border * 2) + (self.line_width * (self.board_size - 1))
-        self.surface_size = (self.board_size * self.tile_size) + self.offset
+        self.surface_size = (self.board_size * self.tile_size)
         self.screen = pygame.display.set_mode((self.surface_size, self.surface_size))
-        self.font = pygame.font.SysFont('courier', 40)
-        pygame.display.set_caption('TicTacToe')
-        
-        # Fill background
-        self.screen.fill(self.WHITE)
-        
-        # Draw lines of tiles
+        self.screen.fill(self.LIGHT_GRAY)
+
         self.draw_board()
 
+        # Display board
+        self.font = pygame.font.SysFont('courier', 40)
+        pygame.display.set_caption('TicTacToe')
         pygame.display.update()
 
     def draw_board(self):
         """To draw the grid, we have to draw (n-1)^2 lines, 
         where n^2 is the total number of tiles (normally 9, so n = 3)"""
-        
-        half_offset = self.offset / 2
 
         for i in range(1, self.board_size):
             # Vertical line
-            pygame.draw.line(self.screen, self.BLACK, (i * self.tile_size + half_offset, 0 + half_offset), 
-                (i * self.tile_size + half_offset, self.board_size * self.tile_size + half_offset), self.line_width)
+            pygame.draw.line(self.screen, self.BLACK, (i * self.tile_size, 0), 
+                (i * self.tile_size, self.board_size * self.tile_size), self.line_width)
             
             # Horizontal line
-            pygame.draw.line(self.screen, self.BLACK, (0 + half_offset, i * self.tile_size + half_offset), 
-                (self.board_size * self.tile_size + half_offset, i * self.tile_size + half_offset), self.line_width)
+            pygame.draw.line(self.screen, self.BLACK, (0, i * self.tile_size), 
+                (self.board_size * self.tile_size, i * self.tile_size), self.line_width)
 
+    def draw_x(self, tile):
+        
+        offset = tile.size * 0.2
 
-    def draw_x(self, x, y):
-        pass
+        # Line from top left to bottom right
+        pygame.draw.line(self.screen, self.RED, (tile.x + offset, tile.y + offset), 
+                                                (tile.x + tile.size - offset, tile.y + tile.size - offset), 2 * self.line_width)
+        
+        # Line from bottom left to top right
+        pygame.draw.line(self.screen, self.RED, (tile.x + offset, tile.y + tile.size - offset), 
+                                                (tile.x + tile.size - offset, tile.y + offset), 2 * self.line_width)
 
-    def draw_o(self, x, y):
-        pygame.draw.circle(self.background, self.BLUE)
+    def draw_o(self, tile):
+        pygame.draw.circle(self.screen, self.BLUE, tile.rect.center, tile.radius, 2 * self.line_width)
 
-    def get_tile_at_click_pos(self):
-        pass
+    def get_tile_at_click_pos(self, x, y, board):
+        #TODO !!!
+        return board.board[0]
 
-    def get_mouse_click(self):
-        pass
+    def get_mouse_click(self, current_player, x, y, board):
+        tile = self.get_tile_at_click_pos(x, y, board)
+        
+        if current_player == 0:
+            self.draw_x(tile)
+        elif current_player == 1:
+            self.draw_o(tile)
 
     def show_move(self):
         pass
