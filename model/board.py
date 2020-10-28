@@ -23,16 +23,18 @@ class Board:
         self.empty_board()
 
         for i in range(self.board_size):
+            board_row = []
             for j in range(self.board_size):
                 tile = Tile(i * self.tile_size, j * self.tile_size, self.tile_size, 'empty')
-
+                board_row.append(tile)
                 self.empty_tiles.append((i * self.tile_size, j * self.tile_size))
-                self.board.append(tile)
+            self.board.append(board_row)
         
     def get_tile_at_pos(self, x, y):
-        for tile in self.board:
-            if tile.rect.collidepoint(x, y) and tile.state == 'empty':
-                index = self.empty_tiles.index((x, y))
-                self.empty_tiles.pop(index)
-                return tile
+        for rows in self.board:
+            for tile in rows:
+                if tile.rect.collidepoint(x, y) and tile.state == 'empty':
+                    index = self.empty_tiles.index((x, y))
+                    self.empty_tiles.pop(index)
+                    return tile
         return None

@@ -71,9 +71,10 @@ class GameView:
         pygame.draw.circle(self.screen, self.BLUE, tile.rect.center, tile.radius, 2 * self.line_width)
 
     def draw_win(self, winner, winning_tiles):
-        first_tile, _, last_tile = winning_tiles
-        pygame.draw.line(self.screen, self.GREEN, first_tile.center, last_tile.center, 2 * self.line_width)
-
+        if len(winning_tiles) > 0:
+            first_tile, _, last_tile = winning_tiles
+            pygame.draw.line(self.screen, self.GREEN, first_tile.rect.center, last_tile.rect.center, 2 * self.line_width)
+            
     def draw_move(self, current_player, tile):     
         if current_player == 0:
             self.draw_x(tile)

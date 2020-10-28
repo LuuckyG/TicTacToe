@@ -6,6 +6,7 @@ from controller.tictactoe import TicTacToe
 
 def play():
     tictactoe = TicTacToe(board_size=3)
+    tictactoe.view.clock.tick(60)
 
     while tictactoe.play:
         for event in pygame.event.get():
@@ -18,9 +19,6 @@ def play():
             if event.type == MOUSEBUTTONUP:
                 x, y = event.pos
                 tictactoe.process_click(x, y)
-                
-                pygame.display.update()
-                tictactoe.view.clock.tick(60)
     
             # Ask for new game
             if tictactoe.winner is not None:
