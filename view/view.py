@@ -22,6 +22,7 @@ class GameView:
         
         # Initialise pygame
         pygame.init()
+        self.clock = pygame.time.Clock()
 
         # Get grid sizes
         self.board_size = board.board_size
@@ -32,7 +33,7 @@ class GameView:
         # Create screen
         self.surface_size = (self.board_size * self.tile_size)
         self.screen = pygame.display.set_mode((self.surface_size, self.surface_size))
-        self.screen.fill(self.LIGHT_GRAY)
+        self.screen.fill(self.WHITE)
 
         self.draw_board()
 
@@ -55,7 +56,7 @@ class GameView:
                 (self.board_size * self.tile_size, i * self.tile_size), self.line_width)
 
     def draw_x(self, tile):
-        
+        """To draw the X, we draw two seperate lines"""
         offset = tile.size * 0.2
 
         # Line from top left to bottom right
@@ -69,20 +70,18 @@ class GameView:
     def draw_o(self, tile):
         pygame.draw.circle(self.screen, self.BLUE, tile.rect.center, tile.radius, 2 * self.line_width)
 
-    def get_tile_at_click_pos(self, x, y, board):
-        #TODO !!!
-        return board.board[0]
+    def draw_win(self, winner, winning_tiles):
+        first_tile, _, last_tile = winning_tiles
+        pygame.draw.line(self.screen, self.GREEN, first_tile.center, last_tile.center, 2 * self.line_width)
 
-    def get_mouse_click(self, current_player, x, y, board):
-        tile = self.get_tile_at_click_pos(x, y, board)
-        
+    def draw_move(self, current_player, tile):     
         if current_player == 0:
             self.draw_x(tile)
         elif current_player == 1:
             self.draw_o(tile)
 
-    def show_move(self):
-        pass
+    def is_new_game(self):
+        return False
 
-    def show_end_screen(self):
+    def draw_thanks(self):
         pass
