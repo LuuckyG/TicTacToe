@@ -8,8 +8,12 @@ from model.player import HumanPlayer, ComputerPlayer
 class TicTacToe:
     """Controller class of the game TicTacToe"""
 
-    def __init__(self, board_size, tile_size = 180):
+    def __init__(self, board_size, tile_size=180):
+        """Setup of game TicTacToe. All game variables, and the board and view
+        are created.
+        """
         self.play = True
+        self.start_screen = True
         self.winner = None
         self.winning_tiles = []
         self.win_combinations = []
@@ -23,13 +27,19 @@ class TicTacToe:
         self.view = GameView(tile_size=tile_size,
                              board=self.board)
 
-        self.start_game()
         self.win_conditions()
-        print(self.win_combinations)
     
-    def start_game(self):
+    def start_game(self, computer=False):
+        """The game can only be started with two players. There is the choice between
+        human vs human, or human vs AI."""
+
         self.add_player('player1')
-        self.add_player('player2')
+        if computer:
+            self.add_player('player2', human=False)
+        else:
+            self.add_player('player2')
+        
+        self.view.show_turn(self.current_player, len(self.board.empty_tiles))
 
     def add_player(self, name, human=True):
         """Add player (human (default) or AI) to player list"""
@@ -48,33 +58,51 @@ class TicTacToe:
         self.player_list.append(player)
     
     def process_click(self, x, y):
-        x = (x // self.board.tile_size) * self.board.tile_size
-        y = (y // self.board.tile_size) * self.board.tile_size
-        clicked_tile = self.board.get_tile_at_pos(x, y)
+        """The main method of the controller.
+        This method takes the coordinates of the mouse when a click is registered,
+        and takes these coordinates to find the corresponding tile. The tile is 
+        afterwards filled with the correct symbol and in the end there is checked whether
+        the last move results in a win or the next turn.
 
-        if clicked_tile is not None:
-            if self.current_player == 0:
-                clicked_tile.state = 'X'
-                self.view.draw_x(clicked_tile)
-            elif self.current_player == 1:
-                clicked_tile.state = 'O'
-                self.view.draw_o(clicked_tile)
+        Args:
+            - x: x-coordinate of mouse at click (in px)
+            - y: y-coordinate of mouse at click (in px)
+        """
+        if self.start_screen:
+            self.view.draw_board()
+            self.start_game()
+            self.start_screen = False
+        else:
+            clicked_tile = self.board.get_tile_at_pos(x, y)
 
-            pygame.display.update()
-            self.check_win()
+            # Fill clicked tile with symbol
+            if clicked_tile is not None:
+                if self.current_player == 0:
+                    clicked_tile.state = 'X'
+                    self.view.draw_x(clicked_tile)
+                elif self.current_player == 1:
+                    clicked_tile.state = 'O'
+                    self.view.draw_o(clicked_tile)
 
-            if self.winner is not None:
-                self.play = False
-                self.view.draw_win(self.winner, self.winning_tiles)
+                self.move_nr += 1
+
+                # Check for winner
                 pygame.display.update()
-            else:
-                self.next_turn()
+                self.check_win()
+
+                if self.winner is not None:
+                    self.play = False
+                    self.view.draw_win(self.winner, self.winning_tiles)
+                    pygame.time.delay(500)
+                    pygame.display.update()
+                else:
+                    self.next_turn()
 
     def next_turn(self):
-        self.move_nr += 1
-
+        """Set next player for next turn"""
         next_player = 1 if self.current_player == 0 else 0
         self.current_player = next_player
+        self.view.show_turn(next_player, len(self.board.empty_tiles))
 
     def win_conditions(self):
         """Add all indices of tiles together as winning combinations
@@ -87,7 +115,7 @@ class TicTacToe:
         """
 
         board_size = self.board.board_size
-        tile_nrs = [x for x in range(0, board_size * board_size)]
+        tile_nrs = [x for x in range(0, board_size ** 2)]
         
         # Rows
         self.win_combinations += ([tuple(tile_nrs[i:i + board_size]) for i in range(0, len(tile_nrs), board_size)])
@@ -133,10 +161,11 @@ class TicTacToe:
                 self.winning_tiles = winning_tiles
 
         # Draw
-        if self.winner is None and self.move_nr == 9:
+        if self.winner is None and self.move_nr == (self.board.board_size ** 2):
             self.winner = 'draw'
 
     def new_game(self):
+        """Setup of new game, with same rules as current game."""
         new_game = self.view.is_new_game()
 
         if new_game:

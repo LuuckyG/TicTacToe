@@ -34,7 +34,7 @@ class Board:
         for rows in self.board:
             for tile in rows:
                 if tile.rect.collidepoint(x, y) and tile.state == 'empty':
-                    index = self.empty_tiles.index((x, y))
+                    index = self.empty_tiles.index((tile.x, tile.y))
                     self.empty_tiles.pop(index)
                     return tile
         return None

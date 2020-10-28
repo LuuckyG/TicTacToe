@@ -5,7 +5,7 @@ from controller.tictactoe import TicTacToe
 
 
 def play():
-    tictactoe = TicTacToe(board_size=3)
+    tictactoe = TicTacToe(board_size=3, tile_size=180)
     tictactoe.view.clock.tick(60)
 
     while tictactoe.play:
@@ -20,9 +20,11 @@ def play():
                 x, y = event.pos
                 tictactoe.process_click(x, y)
     
-            # Ask for new game
-            if tictactoe.winner is not None:
-                tictactoe.new_game()
+                # Ask for new game
+                if tictactoe.winner is not None:
+                    tictactoe.new_game()
+    
+        pygame.time.delay(500)
 
 
 if __name__ == "__main__": play()
