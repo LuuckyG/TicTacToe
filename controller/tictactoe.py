@@ -8,7 +8,7 @@ from model.player import HumanPlayer, ComputerPlayer
 class TicTacToe:
     """Controller class of the game TicTacToe"""
 
-    def __init__(self, board_size, tile_size=180):
+    def __init__(self, board_size):
         """Setup of game TicTacToe. All game variables, and the board and view
         are created.
         """
@@ -22,10 +22,9 @@ class TicTacToe:
         self.player_list = []
         self.current_player = 0
 
-        self.board = Board(tile_size=tile_size,
-                           board_size=board_size)
-        self.view = GameView(tile_size=tile_size,
-                             board=self.board)
+        self.board = Board(board_size=board_size)
+        self.view = GameView(board=self.board,
+                             screen_size=self.board.screen_size)
 
         self.win_conditions()
     

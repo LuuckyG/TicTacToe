@@ -3,14 +3,15 @@ from model.tile import Tile
 class Board:
     """Board class. Captures all `Tile` tiles in the board attribure"""
 
-    def __init__(self, tile_size=180, board_size=3):
+    def __init__(self, screen_size=540, board_size=3):
         """Set up of empty board of size `board_size ^ 2` (default = 3 ^ 2). 
         Each tile on the board has a width in px (default = 180px) of `tile_size`."""
 
         self.board = []
         self.empty_tiles = []
-        self.tile_size = tile_size
+        self.screen_size = screen_size
         self.board_size = board_size
+        self.tile_size = screen_size // board_size
         self.reset()
 
     def empty_board(self):

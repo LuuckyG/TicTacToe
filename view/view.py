@@ -10,11 +10,11 @@ class GameView:
     LIGHT_GRAY = (225, 225, 225)
     GREEN = (0, 255, 0)
 
-    def __init__(self, tile_size, board, border=20, line_width=5):
+    def __init__(self, board, screen_size=540, border=20, line_width=5):
         """Set up of start screen
            
             Args:
-            - tile_size: width of a tile (in px)
+            - tile_size: width of the screen (in px)
             - board: TicTacToe game board
             - border: border around game
             - line_width: Thickness of lines, for drawing the board and the symbols
@@ -26,18 +26,18 @@ class GameView:
 
         # Get grid sizes
         self.board_size = board.board_size
-        self.tile_size = tile_size
+        self.tile_size = board.tile_size
         self.border = border
         self.line_width = line_width
 
         # Create screen
-        self.surface_size = (self.board_size * self.tile_size)
-        self.screen = pygame.display.set_mode((self.surface_size, self.surface_size + 100))
+        self.screen_size = screen_size
+        self.screen = pygame.display.set_mode((self.screen_size, self.screen_size + 100))
 
         # Load image
         file_name = "view/media/start_screen.png"
         self.start_screen = pygame.image.load(file_name)
-        self.start_screen = pygame.transform.scale(self.start_screen, (self.surface_size, self.surface_size))
+        self.start_screen = pygame.transform.scale(self.start_screen, (self.screen_size, self.screen_size))
         
         self.font = pygame.font.SysFont(None, 30)
         pygame.display.set_caption('TicTacToe')
@@ -53,8 +53,6 @@ class GameView:
         # Create two buttons, one voor human vs. human 
         # and one for human vs. AI
         #TODO!
-
-
         pygame.display.update() 
 
     def draw_board(self):
@@ -64,7 +62,7 @@ class GameView:
         self.screen.fill(self.WHITE)
 
         # Create box at the bottom of the display
-        self.screen.fill(self.BLACK, (0, self.surface_size, self.surface_size, 100))
+        self.screen.fill(self.BLACK, (0, self.screen_size, self.screen_size, 100))
 
         for i in range(1, self.board_size):
             # Vertical line
@@ -94,11 +92,11 @@ class GameView:
 
     def draw_message(self, message):
         # Create box at the bottom of the display
-        self.screen.fill(self.BLACK, (0, self.surface_size, self.surface_size, 100))
+        self.screen.fill(self.BLACK, (0, self.screen_size, self.screen_size, 100))
         
         text = self.font.render(message, True, self.WHITE, self.BLACK)
         text_box = text.get_rect()
-        text_box.center = (self.surface_size / 2, self.surface_size + 50)
+        text_box.center = (self.screen_size / 2, self.screen_size + 50)
 
         # Show message
         self.screen.blit(text, text_box)

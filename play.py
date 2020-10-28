@@ -5,7 +5,7 @@ from controller.tictactoe import TicTacToe
 
 
 def play():
-    tictactoe = TicTacToe(board_size=3, tile_size=180)
+    tictactoe = TicTacToe(board_size=5)
     tictactoe.view.clock.tick(60)
 
     while tictactoe.play:
