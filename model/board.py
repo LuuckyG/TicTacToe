@@ -11,6 +11,7 @@ class Board:
         self.empty_tiles = []
         self.tile_size = tile_size
         self.board_size = board_size
+        self.reset()
 
     def empty_board(self):
         """Reset the board to an empty board"""
@@ -22,14 +23,11 @@ class Board:
         self.empty_board()
 
         for i in range(self.board_size):
-            board_row = []
-
             for j in range(self.board_size):
                 tile = Tile(i * self.tile_size, j * self.tile_size, self.tile_size, 'empty')
-                board_row.append(tile)
-                self.empty_tiles.append((i, j))
 
-            self.board.append(board_row)
+                self.empty_tiles.append((i * self.tile_size, j * self.tile_size))
+                self.board.append(tile)
         
     def get_tile_at_pos(self, x, y):
         for tile in self.board:
