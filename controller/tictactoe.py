@@ -1,3 +1,4 @@
+import random
 import pygame
 
 from view.view import GameView
@@ -8,7 +9,7 @@ from model.player import HumanPlayer, ComputerPlayer
 class TicTacToe:
     """Controller class of the game TicTacToe"""
 
-    def __init__(self, board_size):
+    def __init__(self):
         """Setup of game TicTacToe. All game variables, and the board and view
         are created.
         """
@@ -22,37 +23,43 @@ class TicTacToe:
         self.player_list = []
         self.current_player = 0
 
-        self.board = Board(board_size=board_size)
-        self.view = GameView(board=self.board,
-                             screen_size=self.board.screen_size)
+        self.view = GameView()
+        self.view.is_new_game()
 
-        self.win_conditions()
-    
-    def start_game(self, computer=False):
+    def get_settings(self, x, y):
+        if self.view.human_vs_human_button.is_clicked(x, y):
+            self.start_game()
+        elif self.view.human_vs_ai_button.is_clicked(x, y):
+            self.start_game(computer=True)
+
+    def start_game(self, board_size=3, computer=False):
         """The game can only be started with two players. There is the choice between
         human vs human, or human vs AI."""
 
-        self.add_player('player1')
+        # Create players
+        self.add_player('X')
         if computer:
-            self.add_player('player2', human=False)
+            self.add_player('O', human=False)
         else:
-            self.add_player('player2')
+            self.add_player('O')
         
+        random.shuffle(self.player_list)
+
+        # Change starting screen to TicTacToe board
+        self.start_screen = False
+        self.board = Board(board_size=board_size)
+
+        self.win_conditions()
+
+        self.view.draw_board(board=self.board)
         self.view.show_turn(self.current_player, len(self.board.empty_tiles))
 
     def add_player(self, name, human=True):
         """Add player (human (default) or AI) to player list"""
-
-        if len(self.player_list) > 2:
-            # No more than 2 players
-            self.play = False
-            return
-        
-        player_nr = len(self.player_list)
         if human:
-            player = HumanPlayer(name, player_nr, 'human')
+            player = HumanPlayer(name, 'human')
         else:
-            player = ComputerPlayer(name, player_nr, 'AI')
+            player = ComputerPlayer(name, 'AI')
  
         self.player_list.append(player)
     
@@ -67,10 +74,14 @@ class TicTacToe:
             - x: x-coordinate of mouse at click (in px)
             - y: y-coordinate of mouse at click (in px)
         """
+
         if self.start_screen:
-            self.view.draw_board()
-            self.start_game()
-            self.start_screen = False
+            if self.view.start_game_button.is_clicked(x, y):
+                self.get_settings(x, y)
+                self.start_screen = False
+            elif self.view.quit_game_button.is_clicked(x, y):
+                self.play = False
+                pygame.quit()
         else:
             clicked_tile = self.board.get_tile_at_pos(x, y)
 
@@ -90,10 +101,13 @@ class TicTacToe:
                 self.check_win()
 
                 if self.winner is not None:
-                    self.play = False
-                    self.view.draw_win(self.winner, self.winning_tiles)
-                    pygame.time.delay(500)
-                    pygame.display.update()
+                    if self.winner == 'draw':
+                        self.view.draw_message('Draw!')
+                    else:
+                        self.view.draw_win(self.winner, self.winning_tiles)
+                    
+                    # self.play = False
+                    self.new_game()
                 else:
                     self.next_turn()
 
@@ -165,7 +179,12 @@ class TicTacToe:
 
     def new_game(self):
         """Setup of new game, with same rules as current game."""
-        new_game = self.view.is_new_game()
+        
+        # Show new game option
+        self.view.is_new_game()
+        
+        # Ask for new game
+        new_game = True     # PLACEHOLDER
 
         if new_game:
             self.play = True
@@ -176,7 +195,7 @@ class TicTacToe:
             self.player_list = []
             self.current_player = 0
 
+            self.start_screen = True
             self.board.reset()
-
         else:
             self.view.draw_thanks()
