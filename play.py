@@ -9,27 +9,35 @@ def play():
     tictactoe.view.clock.tick(60)
 
     while tictactoe.play:
+        pygame.display.update()
+
         for event in pygame.event.get():
             if event.type == QUIT or pygame.key.get_pressed()[K_q]:
                 tictactoe.play = False
                 pygame.quit()
                 break
-
-            # Start screen
-            if tictactoe.start_screen and event.type == MOUSEMOTION:
-                x, y = event.pos
-                tictactoe.view.follow_mouse(x, y)
+            
+            # Start and settings screens
+            if tictactoe.status != 'game':
+                if event.type == MOUSEMOTION:
+                    x, y = event.pos
+                    tictactoe.view.follow_mouse(x, y)
+                
+                elif event.type == MOUSEBUTTONUP:
+                    x, y = event.pos
+                    tictactoe.process_click(x, y)
 
             # During the game
-            if event.type == MOUSEBUTTONUP:
-                x, y = event.pos
-                tictactoe.process_click(x, y)
+            if tictactoe.status == 'game':
+                player = tictactoe.player_list[tictactoe.current_player]
 
-                # Ask for new game
-                if tictactoe.winner is not None:
-                    tictactoe.new_game()
-                    pygame.time.delay(500)
+                if player.player_type == 'AI':
+                    tictactoe.ai_move()
 
-            pygame.display.update()
+                elif event.type == MOUSEBUTTONUP:
+                    x, y = event.pos
+                    tictactoe.process_click(x, y)
+
+            tictactoe.view.draw_screens(tictactoe.status)
 
 if __name__ == "__main__": play()

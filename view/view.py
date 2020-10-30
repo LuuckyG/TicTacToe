@@ -29,6 +29,7 @@ class GameView:
 
         self.border = border
         self.line_width = line_width
+        self.all_buttons = []
 
         # Create screen
         self.screen_size = screen_size
@@ -41,71 +42,111 @@ class GameView:
 
         # Display starting screen
         self.is_new_game()
-    
-    def create_buttons(self):
-        # Create two buttons, one voor human vs. human and one for human vs. AI
-        self.human_vs_human_button = Button(self.GREEN, 0.05 * self.screen_size, 
-                                    self.screen_size + 10, 0.4 * self.screen_size, 70, 'Human vs. Human')
-        self.human_vs_ai_button = Button(self.LIGHT_GRAY, 0.55 * self.screen_size, 
-                                    self.screen_size + 10, 0.4 * self.screen_size, 70, 'Human vs. AI')
+
+
+    def draw_screens(self, status):
+        """Method to control what screen is draw when tracking mouse movement.
+        Default is drawing the starting screen."""
+
+        if status == 'start_screen':
+            self.draw_start_screen()
+        elif status == 'settings':
+            self.draw_settings_screen()
+        elif status == 'replay':
+            self.draw_play_again_screen()
+        elif status == 'end_game':
+            self.draw_thanks()
         
-        # Create buttons to select the size of the play board
-        self.board_size_3_button = Button(self.GREEN, 0.55 * self.screen_size, 
-                                    self.screen_size + 10, 0.4 * self.screen_size, 70, '3 x 3')
-        self.board_size_5_button = Button(self.LIGHT_GRAY, 0.55 * self.screen_size, 
-                                    self.screen_size + 10, 0.4 * self.screen_size, 70, '5 x 5')
-        self.board_size_7_button = Button(self.LIGHT_GRAY, 0.55 * self.screen_size, 
-                                    self.screen_size + 10, 0.4 * self.screen_size, 70, '7 x 7')
-        
-        # Play and Quit game
-        self.start_game_button = Button(self.GREEN, 0.55 * self.screen_size, 
-                                    self.screen_size + 10, 0.4 * self.screen_size, 70, 'PLAY!')
-        self.quit_game_button = Button(self.RED, 0.55 * self.screen_size, 
-                                    self.screen_size + 10, 0.4 * self.screen_size, 70, 'QUIT')
+        pygame.display.update()
+
 
     def follow_mouse(self, x, y):
-        if self.human_vs_human_button.is_hover(x, y):
-            self.human_vs_human_button.color = self.LIGHT_GRAY
-        else:
-            self.human_vs_human_button.color = self.GREEN
-        
-        if self.human_vs_ai_button.is_hover(x, y):
-            self.human_vs_ai_button.color = self.YELLOW
-        else:
-            self.human_vs_ai_button.color = self.LIGHT_GRAY
-        
-        self.draw_start_screen()
+        """Track mouse movement and if hovered over a button, change the color
+        of the button to indicate focus."""
+        for button in self.all_buttons:
+            if button.is_hover(x, y):
+                button.color = self.YELLOW
+            else:
+                if button.selected:
+                    button.color = self.GREEN
+                else:
+                    button.color = self.LIGHT_GRAY
+
 
     def is_new_game(self):
-        """Draw the starting screen, showing the game options"""
-
-        self.screen.fill(self.WHITE)
-        text = self.big_font.render('Tic Tac Toe', True, self.BLACK, self.WHITE)
-        text_box = text.get_rect()
-        text_box.center = (self.screen_size / 2, 50)
-
-        # Show message
-        self.screen.blit(text, text_box)
-        pygame.display.update()
-        
-        # Load image
-        # file_name = "view/media/start_screen.png"
-        # self.start_screen = pygame.image.load(file_name)
-        # self.start_screen = pygame.transform.scale(self.start_screen, (self.screen_size, self.screen_size))
+        """Draw the starting screen, showing the game options"""       
+        file_name = "view/media/start_screen.png"
+        self.start_screen_image = pygame.image.load(file_name)
+        self.start_screen_image = pygame.transform.scale(self.start_screen_image, (self.screen_size, self.screen_size))
         
         self.create_buttons()
         self.draw_start_screen()
 
-    def draw_start_screen(self):
-        # self.screen.fill(self.WHITE)
-        # self.screen.blit(self.start_screen, (0, 0))
 
-        self.human_vs_human_button.draw(self.screen, self.font)
-        self.human_vs_ai_button.draw(self.screen, self.font)
+    def draw_start_screen(self):
+        """Start screen"""
+        self.screen.fill(self.WHITE)
+        self.screen.blit(self.start_screen_image, (0, 0))
+
+        self.settings_button.draw(self.screen, self.small_font, thickness=1)
+        self.start_game_button.draw(self.screen, self.big_font)
+        self.quit_game_button.draw(self.screen, self.small_font, thickness=1)
+
+   
+    def draw_settings_screen(self):
+        """Settings screen"""
+        self.screen.fill(self.LIGHT_GRAY)
+
+        # Title
+        title_text = self.big_font.render('Settings', True, self.BLACK, self.LIGHT_GRAY)
+        title_text_box = title_text.get_rect()
+        title_text_box.center = (self.screen_size / 2, 0.3 * self.screen_size)
+        
+        # Show settings
+        # Human vs. Human or Human vs. AI
+        game_type_text = self.font.render('Game Type', True, self.BLACK, self.LIGHT_GRAY)
+        game_type_text_box = game_type_text.get_rect()
+        game_type_text_box.center = (0.2 * self.screen_size, 0.5 * self.screen_size)
+
+        self.human_vs_human_button.draw(self.screen, self.small_font)
+        self.human_vs_ai_button.draw(self.screen, self.small_font)
+
+        # Board size
+        board_size_text = self.font.render('Board Size', True, self.BLACK, self.LIGHT_GRAY)
+        board_size_text_box = board_size_text.get_rect()
+        board_size_text_box.center = (0.2 * self.screen_size, 0.6 * self.screen_size)
+
+        self.board_size_3_button.draw(self.screen, self.small_font)
+        self.board_size_5_button.draw(self.screen, self.small_font)
+        self.board_size_7_button.draw(self.screen, self.small_font)
+
+        # Go back button
+        self.back_button.draw(self.screen, self.small_font)
+
+        # Blit everything to screen
+        self.screen.blit(title_text, title_text_box)
+        self.screen.blit(game_type_text, game_type_text_box)
+        self.screen.blit(board_size_text, board_size_text_box)
+
+
+    def draw_play_again_screen(self):
+        """Show message if player wants to play another game"""
+        return True
+
+
+    def draw_thanks(self):
+        """Show 'thank you' message before closing application.="""
+        self.screen.fill(self.WHITE)
+        self.screen.blit(self.start_screen_image, (0, 0))
+        self.show_message('Thanks for Playing!', self.big_font, text_color=self.BLACK, background=self.WHITE)
+        pygame.time.delay(1000)
+
 
     def draw_board(self, board):
-        """To draw the grid, we have to draw (n-1)^2 lines, 
-        where n^2 is the total number of tiles (normally 9, so n = 3)"""
+        """Draw the game board.
+        To draw the grid, we have to draw (n-1)^2 lines, 
+        where n^2 is the total number of tiles (normally 9, so n = 3).
+        """
 
         # Get grid sizes
         self.board_size = board.board_size
@@ -125,8 +166,9 @@ class GameView:
             pygame.draw.line(self.screen, self.BLACK, (0, i * self.tile_size), 
                 (self.board_size * self.tile_size, i * self.tile_size), self.line_width)
 
+
     def draw_x(self, tile):
-        """To draw the X, we draw two seperate lines"""
+        """Draw 'X' symbol on tile. To draw the X, we draw two seperate lines"""
         offset = tile.size * 0.2
 
         # Line from top left to bottom right
@@ -137,14 +179,18 @@ class GameView:
         pygame.draw.line(self.screen, self.RED, (tile.x + offset, tile.y + tile.size - offset), 
                                                 (tile.x + tile.size - offset, tile.y + offset), 2 * self.line_width)
 
+
     def draw_o(self, tile):
+        """Draw 'O' symbol on tile"""
         pygame.draw.circle(self.screen, self.BLUE, tile.rect.center, tile.radius, 2 * self.line_width)
 
-    def draw_message(self, message):
+
+    def show_message(self, message, font, text_color=(255, 255, 255), background=(0, 0, 0)):
+        """Show message with info to the user at the bottom of the window, below the play board"""
         # Create box at the bottom of the display
-        self.screen.fill(self.BLACK, (0, self.screen_size, self.screen_size, 100))
+        self.screen.fill(background, (0, self.screen_size, self.screen_size, 100))
         
-        text = self.font.render(message, True, self.WHITE, self.BLACK)
+        text = font.render(message, True, text_color, background)
         text_box = text.get_rect()
         text_box.center = (self.screen_size / 2, self.screen_size + 50)
 
@@ -152,18 +198,161 @@ class GameView:
         self.screen.blit(text, text_box)
         pygame.display.update()
 
+
     def draw_win(self, winner, winning_tiles):
+        """Indicate who has won the game"""
         first_tile = winning_tiles[0]
         last_tile = winning_tiles[-1]
         pygame.draw.line(self.screen, self.GREEN, first_tile.rect.center, last_tile.rect.center, 2 * self.line_width)
 
         message = f"{winner} Wins!"
-        self.draw_message(message)
+        self.show_message(message, self.font)
         pygame.time.delay(3000)
 
-    def show_turn(self, player, num_empty_tiles):
-        message = f"{'XO'[player]}'s Turn. {num_empty_tiles} Empty Tiles Left"
-        self.draw_message(message)
 
-    def draw_thanks(self):
-        pass
+    def show_turn(self, player, num_empty_tiles):
+        """Show who's turn it is and how many empty tiles are left"""
+        message = f"{'XO'[player]}'s Turn. {num_empty_tiles} Empty Tiles Left"
+        self.show_message(message, self.font)
+
+
+    def create_buttons(self):
+        """Function to create the buttons needed to navigate throught the game"""
+
+        #### Start Screen ####
+        self.settings_button = Button(color=self.LIGHT_GRAY, 
+                                      x=0.05 * self.screen_size, 
+                                      y=self.screen_size + 30, 
+                                      width=0.2 * self.screen_size, 
+                                      height=40, 
+                                      value='settings', 
+                                      group='start_screen', 
+                                      selected=False, 
+                                      text_color=self.BLACK, 
+                                      text='Settings')
+
+        self.start_game_button = Button(color=self.GREEN, 
+                                        x=0.30 * self.screen_size, 
+                                        y=self.screen_size + 15, 
+                                        width=0.4 * self.screen_size, 
+                                        height=70, 
+                                        value='start', 
+                                        group='start_screen', 
+                                        selected=True, 
+                                        text_color=self.WHITE, 
+                                        text='PLAY!')
+
+        self.quit_game_button = Button(color=self.LIGHT_GRAY, 
+                                       x=0.75 * self.screen_size, 
+                                       y=self.screen_size + 30, 
+                                       width=0.2 * self.screen_size, 
+                                       height=40, 
+                                       value='quit',
+                                       group='start_screen', 
+                                       selected=False, 
+                                       text_color=self.BLACK, 
+                                       text='Quit')
+
+        # ---------------------------------------------------------------------------------- #
+        #### Settings Screen ####
+
+        # Create two buttons, one voor human vs. human and one for human vs. AI
+        self.human_vs_human_button = Button(color=self.GREEN, 
+                                            x=0.5 * self.screen_size, 
+                                            y=0.5 * self.screen_size - 15, 
+                                            width=0.2 * self.screen_size, 
+                                            height=30, 
+                                            value=False,
+                                            group='vs_computer', 
+                                            selected=True, 
+                                            text_color=self.WHITE, 
+                                            text='Human vs. Human')
+
+        self.human_vs_ai_button = Button(color=self.LIGHT_GRAY, 
+                                         x=0.75 * self.screen_size, 
+                                         y=0.5 * self.screen_size - 15, 
+                                         width=0.2 * self.screen_size, 
+                                         height=30,
+                                         value=True,
+                                         group='vs_computer', 
+                                         selected=False, 
+                                         text_color=self.BLACK, 
+                                         text='Human vs. AI')
+        
+        # Create buttons to select the size of the play board
+        self.board_size_3_button = Button(color=self.GREEN, 
+                                          x=0.5 * self.screen_size, 
+                                          y=0.6 * self.screen_size - 15, 
+                                          width=0.1 * self.screen_size, 
+                                          height=30, 
+                                          value=3,
+                                          group='board_size', 
+                                          selected=True, 
+                                          text_color=self.WHITE, 
+                                          text='3 x 3')
+
+        self.board_size_5_button = Button(color=self.LIGHT_GRAY, 
+                                          x=0.65 * self.screen_size, 
+                                          y=0.6 * self.screen_size - 15, 
+                                          width=0.1 * self.screen_size, 
+                                          height=30, 
+                                          value=5,
+                                          group='board_size', 
+                                          selected=False, 
+                                          text_color=self.BLACK, 
+                                          text='5 x 5')
+                                          
+        self.board_size_7_button = Button(color=self.LIGHT_GRAY, 
+                                          x=0.8 * self.screen_size, 
+                                          y=0.6 * self.screen_size - 15, 
+                                          width=0.1 * self.screen_size, 
+                                          height=30, 
+                                          value=7,
+                                          group='board_size', 
+                                          selected=False, 
+                                          text_color=self.BLACK, 
+                                          text='7 x 7')
+        
+        # Go back button
+        self.back_button = Button(color=self.LIGHT_GRAY, 
+                                  x=0.1 * self.screen_size, 
+                                  y=self.screen_size, 
+                                  width=0.1 * self.screen_size, 
+                                  height=30, 
+                                  value='cancel', 
+                                  group='cancel', 
+                                  selected=False, 
+                                  text_color=self.BLACK, 
+                                  text='Back')
+        
+        # ---------------------------------------------------------------------------------- #
+
+        #### End Screen ####
+        self.play_again_button = Button(color=self.GREEN, 
+                                        x=0.55 * self.screen_size, 
+                                        y=self.screen_size + 10, 
+                                        width=0.4 * self.screen_size, 
+                                        height=70, 
+                                        value=True,
+                                        group='end_screen', 
+                                        selected=True, 
+                                        text_color=self.WHITE, 
+                                        text='Yes!!')
+
+        self.nomore_game_button = Button(color=self.RED, 
+                                         x=0.55 * self.screen_size, 
+                                         y=self.screen_size + 10, 
+                                         width=0.4 * self.screen_size, 
+                                         height=70, 
+                                         value=False,
+                                         group='end_screen', 
+                                         selected=False, 
+                                         text_color=self.BLACK, 
+                                         text='No')
+        
+        # Collect all buttons
+        self.all_buttons.extend((self.settings_button, self.start_game_button, self.quit_game_button,
+                                 self.human_vs_human_button, self.human_vs_ai_button, 
+                                 self.board_size_3_button, self.board_size_5_button, self.board_size_7_button,
+                                 self.back_button,
+                                 self.play_again_button, self.nomore_game_button))
