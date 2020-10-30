@@ -7,6 +7,7 @@ class GameView:
     
     WHITE = (255, 255, 255)
     YELLOW = (255, 233, 33)
+    ORANGE = (255,237,194)
     RED = (255, 82, 82)
     BLUE = (69, 125, 255)
     BLACK = (0, 0, 0)
@@ -131,6 +132,20 @@ class GameView:
 
     def draw_play_again_screen(self):
         """Show message if player wants to play another game"""
+        border = 2
+        self.screen.fill(self.BLACK, (0.20 * self.screen_size - border, 0.40 * self.screen_size - border, 
+                                       0.60 * self.screen_size + 2 * border, 0.20 * self.screen_size + 2 * border))
+        self.screen.fill(self.ORANGE, (0.20 * self.screen_size, 0.40 * self.screen_size, 
+                                       0.60 * self.screen_size, 0.20 * self.screen_size))
+        # pygame.display.update()
+
+        text = self.big_font.render('Play Again?', True, self.BLACK, self.ORANGE)
+        text_box = text.get_rect()
+        text_box.center = (0.5 * self.screen_size, 0.45 * self.screen_size)
+        self.screen.blit(text, text_box)
+
+        self.play_again_button.draw(self.screen, self.font)
+        self.nomore_game_button.draw(self.screen, self.font)
         return True
 
 
@@ -329,10 +344,10 @@ class GameView:
 
         #### End Screen ####
         self.play_again_button = Button(color=self.GREEN, 
-                                        x=0.55 * self.screen_size, 
-                                        y=self.screen_size + 10, 
-                                        width=0.4 * self.screen_size, 
-                                        height=70, 
+                                        x=0.25 * self.screen_size, 
+                                        y=0.50 * self.screen_size + 5, 
+                                        width=0.2 * self.screen_size, 
+                                        height=40, 
                                         value=True,
                                         group='end_screen', 
                                         selected=True, 
@@ -341,9 +356,9 @@ class GameView:
 
         self.nomore_game_button = Button(color=self.RED, 
                                          x=0.55 * self.screen_size, 
-                                         y=self.screen_size + 10, 
-                                         width=0.4 * self.screen_size, 
-                                         height=70, 
+                                         y=0.50 * self.screen_size + 5, 
+                                         width=0.2 * self.screen_size, 
+                                         height=40, 
                                          value=False,
                                          group='end_screen', 
                                          selected=False, 
