@@ -23,41 +23,9 @@ class TicTacToe:
         self.move_nr = 0
         self.player_list = []
         self.current_player = 0
-        self.settings = {'vs_computer': False, 'board_size': 3, 'new_game': True}
+        self.settings = {'vs_computer': False, 'ai_level': 1, 'board_size': 3, 'new_game': True}
 
         self.view = GameView()
-
-
-    def get_settings(self):
-        """Get the selected settings by the user"""
-        for button in self.view.all_buttons:
-            group = button.group
-            if (group == 'game_type' or group == 'board_size') and button.selected:
-                self.settings[group] = button.value
-
-
-    def start_game(self):
-        """The game is started with the selected settings.
-        The default settings are: human vs. human, and a 3x3 board."""
-
-        # Create players
-        self.player_list.append(Player('X', 'human'))
-        
-        if self.settings['vs_computer']:
-            self.player_list.append(Player('O', 'AI'))
-        else:
-            self.player_list.append(Player('O', 'human'))
-        
-        random.shuffle(self.player_list)
-
-        # Change starting screen to TicTacToe board
-        self.board = Board(screen_size=self.view.screen_size, 
-                           board_size=self.settings['board_size'])
-
-        self.win_conditions()
-
-        self.view.draw_board(board=self.board)
-        self.view.show_turn(self.current_player, len(self.board.empty_tiles))
 
 
     def process_click(self, x, y):
@@ -100,6 +68,14 @@ class TicTacToe:
             self.play = False
 
 
+    def get_settings(self):
+        """Get the selected settings by the user"""
+        for button in self.view.all_buttons:
+            group = button.group
+            if (group == 'game_type' or group == 'board_size' or group == 'ai_level') and button.selected:
+                self.settings[group] = button.value
+
+
     def update_settings(self, x, y):
         """Settings page.
         Determine what settings the user changes. The values that can be changed are: 
@@ -112,6 +88,30 @@ class TicTacToe:
         if self.view.back_button.is_clicked(x, y):
             self.status = 'start_screen'            
             
+
+    def start_game(self):
+        """The game is started with the selected settings.
+        The default settings are: human vs. human, and a 3x3 board."""
+
+        # Create players
+        self.player_list.append(Player('X', 'human'))
+        
+        if self.settings['vs_computer']:
+            self.player_list.append(Player('O', 'AI'))
+        else:
+            self.player_list.append(Player('O', 'human'))
+        
+        random.shuffle(self.player_list)
+
+        # Change starting screen to TicTacToe board
+        self.board = Board(screen_size=self.view.screen_size, 
+                           board_size=self.settings['board_size'])
+
+        self.win_conditions()
+
+        self.view.draw_board(board=self.board)
+        self.view.show_turn(self.current_player, len(self.board.empty_tiles))
+
 
     def play_game(self, x, y):
         """This method takes the coordinates of the mouse when a click is registered,
@@ -152,30 +152,6 @@ class TicTacToe:
         next_player = 1 if self.current_player == 0 else 0
         self.current_player = next_player
         self.view.show_turn(next_player, len(self.board.empty_tiles))
-
-
-    def win_conditions(self):
-        """Add all indices of tiles together as winning combinations
-        There are 2n + 2 win conditions and 1 draw condition
-
-        For a 3x3 board this would be: 8 win conditions
-        - Horizontal (3x): (0, 1, 2), (3, 4, 5), (6, 7, 8)
-        - Vertical (3x): (0, 3, 6), (1, 4, 7), (2, 5, 8)
-        - Diagonal (2x): (0, 4, 8), (2, 4, 6)
-        """
-
-        board_size = self.board.board_size
-        tile_nrs = [x for x in range(0, board_size ** 2)]
-        
-        # Rows
-        self.win_combinations += ([tuple(tile_nrs[i:i + board_size]) for i in range(0, len(tile_nrs), board_size)])
-
-        # Columns
-        self.win_combinations += ([tuple(x for x in range(y, len(tile_nrs), board_size)) for y in range(0, board_size)])
-
-        # Diagonals
-        self.win_combinations.append(tuple(x for x in range(0, len(tile_nrs), board_size + 1)))
-        self.win_combinations.append(tuple(x for x in range(board_size - 1, len(tile_nrs) - (board_size - 1), board_size - 1)))
 
 
     def check_for_winner(self):
@@ -237,6 +213,30 @@ class TicTacToe:
         # Draw
         if self.winner is None and self.move_nr == (self.board.board_size ** 2):
             self.winner = 'draw'
+
+
+    def win_conditions(self):
+        """Add all indices of tiles together as winning combinations
+        There are 2n + 2 win conditions and 1 draw condition
+
+        For a 3x3 board this would be: 8 win conditions
+        - Horizontal (3x): (0, 1, 2), (3, 4, 5), (6, 7, 8)
+        - Vertical (3x): (0, 3, 6), (1, 4, 7), (2, 5, 8)
+        - Diagonal (2x): (0, 4, 8), (2, 4, 6)
+        """
+
+        board_size = self.board.board_size
+        tile_nrs = [x for x in range(0, board_size ** 2)]
+        
+        # Rows
+        self.win_combinations += ([tuple(tile_nrs[i:i + board_size]) for i in range(0, len(tile_nrs), board_size)])
+
+        # Columns
+        self.win_combinations += ([tuple(x for x in range(y, len(tile_nrs), board_size)) for y in range(0, board_size)])
+
+        # Diagonals
+        self.win_combinations.append(tuple(x for x in range(0, len(tile_nrs), board_size + 1)))
+        self.win_combinations.append(tuple(x for x in range(board_size - 1, len(tile_nrs) - (board_size - 1), board_size - 1)))
 
 
     def new_game(self, x, y):
