@@ -17,11 +17,15 @@ Moreover, the board size can be changed from 3x3 (default) to 5x5 or 7x7.
 4. **Play again?** <br />If someone wins or the game is drawn, the user is asked if they wants to play again.
 If yes, the user is taken back to the start screen. Else, the game is quit.
 
-5. **Quit game.** <br />The user is thanked for playing the game and after some seconds the game window is closed.
+5. **Quit game.** <br />The user is thanked for playing the game and after some seconds the game window is closed.<br /><br />
 
-![Start screen][start_screen]
+![Start screen][start_screen]<br />
+![Settings][settings]<br />
+![Play board][board]
 
 [start_screen]: screenshots/startscreen.JPG "Start screen"
+[settings]: screenshots/settings.JPG "Settings screen"
+[board]: screenshots/board.JPG "TicTacToe Board"
 
 
 ## Stil to do:
