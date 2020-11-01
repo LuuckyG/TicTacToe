@@ -1,5 +1,5 @@
 # TicTacToe
-A TicTacToe game made with PyGame, using an Object Orientated Design.
+A TicTacToe game made with PyGame, using an Object Orientated Design and Model View Controller (MVC) architecture.
 
 To start the game run: `python -m play` in the terminal
 
@@ -21,7 +21,7 @@ If yes, the user is taken back to the start screen. Else, the game is quit.
 
 ![Start screen][start_screen]
 
-[start_screen]: (screenshots/startscreen.JPG "Start screen")
+[start_screen]: screenshots/startscreen.JPG "Start screen"
 
 
 ## Stil to do:
