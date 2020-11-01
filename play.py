@@ -9,7 +9,7 @@ def play():
     tictactoe = TicTacToe()
     tictactoe.view.clock.tick(60)
 
-    while tictactoe.play:
+    while getattr(tictactoe, 'play'):
         pygame.display.update()
 
         for event in pygame.event.get():
@@ -19,7 +19,7 @@ def play():
                 break
             
             # Start and settings screens
-            if tictactoe.status != 'game':
+            if getattr(tictactoe, 'status') != 'game':
                 if event.type == MOUSEMOTION:
                     x, y = event.pos
                     tictactoe.view.follow_mouse(x, y)
@@ -29,16 +29,16 @@ def play():
                     tictactoe.process_click(x, y)
 
             # During the game
-            if tictactoe.status == 'game':
-                player = tictactoe.player_list[tictactoe.current_player]
+            if getattr(tictactoe, 'status') == 'game':
+                player = tictactoe.get_current_player()
 
-                if player.player_type == 'AI':
+                if getattr(player, 'player_type') == 'AI':
                     tictactoe.ai_move()
 
                 elif event.type == MOUSEBUTTONUP:
                     x, y = event.pos
                     tictactoe.process_click(x, y)
 
-            tictactoe.view.draw_screens(tictactoe.status)
+            tictactoe.view.draw_screens(getattr(tictactoe, 'status'))
 
 if __name__ == "__main__": play()

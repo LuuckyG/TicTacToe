@@ -28,6 +28,10 @@ class TicTacToe:
         self.view = GameView()
 
 
+    def get_current_player(self):
+        return self.player_list[self.current_player]
+
+
     def process_click(self, x, y):
         """The main method of the controller.
         This method determines in which phase of the game we are and 
@@ -129,7 +133,7 @@ class TicTacToe:
         self.win_conditions()
 
         self.view.draw_board(board=self.board)
-        player = self.player_list[self.current_player]
+        player = self.get_current_player()
         self.view.show_turn(player.symbol, len(self.board.empty_tiles))
 
 
@@ -147,14 +151,14 @@ class TicTacToe:
         clicked_tile = self.board.get_tile_at_pos(x, y)
 
         if clicked_tile is not None:
-            player = self.player_list[self.current_player]
+            player = self.get_current_player()
             player.make_move(clicked_tile, self.view)
             self.check_for_winner()
 
 
     def ai_move(self):
         """Let 'AI' make a random move as counter move"""
-        ai = self.player_list[self.current_player]
+        ai = self.get_current_player()
         selected_tile = ai.chose_tile(self.board)
 
         pygame.time.delay(500)
@@ -165,7 +169,7 @@ class TicTacToe:
 
     def next_turn(self):
         """Set next player for next turn"""
-        player = self.player_list[self.current_player]
+        player = self.get_current_player()
         next_player = 'O' if player.symbol != 'O' else 'X'
         self.current_player = 0 if self.move_nr % 2 == 0 else 1
         self.view.show_turn(next_player, len(self.board.empty_tiles))
@@ -178,8 +182,6 @@ class TicTacToe:
         """
 
         self.move_nr += 1
-
-        # Check for winner
         self.check_win_conditions()
 
         if self.winner is not None:
