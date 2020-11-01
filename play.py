@@ -5,6 +5,7 @@ from controller.tictactoe import TicTacToe
 
 
 def play():
+    """The main game loop"""
     tictactoe = TicTacToe()
     tictactoe.view.clock.tick(60)
 

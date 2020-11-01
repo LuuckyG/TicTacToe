@@ -23,7 +23,7 @@ class TicTacToe:
         self.move_nr = 0
         self.player_list = []
         self.current_player = 0
-        self.settings = {'vs_computer': False, 'ai_level': 1, 'board_size': 3, 'new_game': True}
+        self.settings = {'vs_computer': False, 'ai_level': 1, 'board_size': 3}
 
         self.view = GameView()
 
@@ -72,21 +72,41 @@ class TicTacToe:
         """Get the selected settings by the user"""
         for button in self.view.all_buttons:
             group = button.group
-            if (group == 'game_type' or group == 'board_size' or group == 'ai_level') and button.selected:
+            if (group == 'vs_computer' or group == 'board_size' or group == 'ai_level') and button.selected:
                 self.settings[group] = button.value
 
 
     def update_settings(self, x, y):
         """Settings page.
         Determine what settings the user changes. The values that can be changed are: 
-        the opponent (human or AI), and the size of the board (3x3, 5x5, or 7x7).
+        the opponent (human or AI), the level of the AI, and the size of the board 
+        (3x3, 5x5, or 7x7).
         
         Args:
         - x: x-coordinate of mouse at click (in px)
         - y: y-coordinate of mouse at click (in px)
         """
+
+        button_groups = ['vs_computer', 'ai_level', 'board_size']
+
+        # Check if button is clicked
+        for button in self.view.all_buttons:
+            if button.group in button_groups and button.is_clicked(x, y):
+                
+                # Update view of other buttons that are not selected
+                for related_button in self.view.all_buttons:
+                    if related_button.group == button.group and related_button.selected:
+                        self.view.update_button_look(related_button, False, 
+                                    self.view.LIGHT_GRAY, self.view.BLACK)
+
+                # Update view of clicked button
+                self.view.update_button_look(button, True, 
+                                    self.view.GREEN, self.view.WHITE)
+        
+        # Check if user is satisfied with settings and wants to return to
+        # start screen to start playing the game
         if self.view.back_button.is_clicked(x, y):
-            self.status = 'start_screen'            
+            self.status = 'start_screen'
             
 
     def start_game(self):
@@ -110,7 +130,8 @@ class TicTacToe:
         self.win_conditions()
 
         self.view.draw_board(board=self.board)
-        self.view.show_turn(self.current_player, len(self.board.empty_tiles))
+        player = self.player_list[self.current_player]
+        self.view.show_turn(player.symbol, len(self.board.empty_tiles))
 
 
     def play_game(self, x, y):
@@ -139,18 +160,24 @@ class TicTacToe:
 
     def ai_move(self):
         """Let 'AI' make a random move as counter move"""
-        index = random.randint(0, len(self.board.empty_tiles))
-        x, y = self.board.empty_tiles[index]
-        selected_tile = self.board.get_tile_at_pos(x, y)
+        ai = self.player_list[self.current_player]
+        if self.settings['ai_level'] == 1:
+            selected_tile = ai.make_random_move(self.board)
+        else:
+            # selected_tile = ai.make_good_move(self.board, level=self.settings['ai_level'])    #TODO
+            selected_tile = ai.make_random_move(self.board)
+
         selected_tile.state = 'O'
+        pygame.time.delay(500)
         self.view.draw_o(selected_tile)
         self.check_for_winner()
 
 
     def next_turn(self):
         """Set next player for next turn"""
-        next_player = 1 if self.current_player == 0 else 0
-        self.current_player = next_player
+        player = self.player_list[self.current_player]
+        next_player = 'O' if player.symbol != 'O' else 'X'
+        self.current_player = 0 if self.move_nr % 2 == 0 else 1
         self.view.show_turn(next_player, len(self.board.empty_tiles))
 
 
@@ -163,7 +190,6 @@ class TicTacToe:
         self.move_nr += 1
 
         # Check for winner
-        pygame.display.update()
         self.check_win_conditions()
 
         if self.winner is not None:
@@ -248,13 +274,11 @@ class TicTacToe:
         - y: y-coordinate of mouse at click (in px)
         """
         
-        # Show new game option
-        # new_game = self.view.draw_play_again_screen()
-        
-        if self.settings['new_game']:
+        if self.view.play_again_button.is_clicked(x, y):
             self.play = True
             self.winner = None
             self.winning_tiles = []
+            self.win_combinations = []
 
             self.move_nr = 0
             self.player_list = []
@@ -262,6 +286,6 @@ class TicTacToe:
 
             self.status = 'start_screen'
             self.board.reset()
-        else:
+        elif self.view.nomore_game_button.is_clicked(x, y):
             self.status = 'end_game'
             self.play = False
