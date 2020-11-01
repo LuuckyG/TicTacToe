@@ -3,7 +3,6 @@ A TicTacToe game made with PyGame, using an Object Orientated Design and Model V
 
 To start the game run: `python -m play` in the terminal
 
----
 
 ## Game flow
 The game follows the following flow:
@@ -21,19 +20,10 @@ If yes, the user is taken back to the start screen. Else, the game is quit.
 
 5. **Quit game.** <br />The user is thanked for playing the game and after some seconds the game window is closed.
 
----
 
 ## Game images
-![Start screen][start_screen]<br />
-![Settings][settings]<br />
-![Play board][board]
-
-[start_screen]: screenshots/startscreen.JPG "Start screen"
-[settings]: screenshots/settings.JPG "Settings screen"
-[board]: screenshots/board.JPG "TicTacToe Board"
-
----
-
-## Stil to do:
-Add a smart AI, which makes good moves based on the current position. 
-Make the strength of this AI also a setting which can be changed by the user.
+<img src="screenshots/startscreen.JPG" width="48">
+<img src="screenshots/settings.JPG" width="48">
+<img src="screenshots/board.JPG" width="48">
+<img src="screenshots/endgame.JPG" width="48">
+<img src="screenshots/thanks.JPG" width="48">
