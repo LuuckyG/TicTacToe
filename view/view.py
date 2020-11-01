@@ -110,19 +110,10 @@ class GameView:
         self.human_vs_human_button.draw(self.screen, self.small_font)
         self.human_vs_ai_button.draw(self.screen, self.small_font)
 
-        # AI level
-        ai_level_text = self.font.render('AI level', True, self.BLACK, self.LIGHT_GRAY)
-        ai_level_text_box = ai_level_text.get_rect()
-        ai_level_text_box.center = (0.17 * self.screen_size, 0.6 * self.screen_size)
-
-        self.ai_level_1_button.draw(self.screen, self.small_font)
-        self.ai_level_2_button.draw(self.screen, self.small_font)
-        self.ai_level_3_button.draw(self.screen, self.small_font)
-
         # Board size
         board_size_text = self.font.render('Board Size', True, self.BLACK, self.LIGHT_GRAY)
         board_size_text_box = board_size_text.get_rect()
-        board_size_text_box.center = (0.2 * self.screen_size, 0.7 * self.screen_size)
+        board_size_text_box.center = (0.2 * self.screen_size, 0.6 * self.screen_size)
 
         self.board_size_3_button.draw(self.screen, self.small_font)
         self.board_size_5_button.draw(self.screen, self.small_font)
@@ -134,7 +125,6 @@ class GameView:
         # Blit everything to screen
         self.screen.blit(title_text, title_text_box)
         self.screen.blit(game_type_text, game_type_text_box)
-        self.screen.blit(ai_level_text, ai_level_text_box)
         self.screen.blit(board_size_text, board_size_text_box)
 
 
@@ -309,45 +299,11 @@ class GameView:
                                          selected=False, 
                                          text_color=self.BLACK, 
                                          text='Human vs. AI')
-        
-        # Create buttons to select the level of the AI
-        self.ai_level_1_button = Button(color=self.GREEN, 
-                                        x=0.5 * self.screen_size, 
-                                        y=0.6 * self.screen_size - 15, 
-                                        width=0.1 * self.screen_size, 
-                                        height=30, 
-                                        value=1,
-                                        group='ai_level', 
-                                        selected=True, 
-                                        text_color=self.WHITE, 
-                                        text='1')
-
-        self.ai_level_2_button = Button(color=self.LIGHT_GRAY, 
-                                        x=0.65 * self.screen_size, 
-                                        y=0.6 * self.screen_size - 15, 
-                                        width=0.1 * self.screen_size, 
-                                        height=30, 
-                                        value=2,
-                                        group='ai_level', 
-                                        selected=False, 
-                                        text_color=self.BLACK, 
-                                        text='2')
-                                          
-        self.ai_level_3_button = Button(color=self.LIGHT_GRAY, 
-                                        x=0.8 * self.screen_size, 
-                                        y=0.6 * self.screen_size - 15, 
-                                        width=0.1 * self.screen_size, 
-                                        height=30, 
-                                        value=3,
-                                        group='ai_level', 
-                                        selected=False, 
-                                        text_color=self.BLACK, 
-                                        text='3')
 
         # Create buttons to select the size of the play board
         self.board_size_3_button = Button(color=self.GREEN, 
                                           x=0.5 * self.screen_size, 
-                                          y=0.7 * self.screen_size - 15, 
+                                          y=0.6 * self.screen_size - 15, 
                                           width=0.1 * self.screen_size, 
                                           height=30, 
                                           value=3,
@@ -358,7 +314,7 @@ class GameView:
 
         self.board_size_5_button = Button(color=self.LIGHT_GRAY, 
                                           x=0.65 * self.screen_size, 
-                                          y=0.7 * self.screen_size - 15, 
+                                          y=0.6 * self.screen_size - 15, 
                                           width=0.1 * self.screen_size, 
                                           height=30, 
                                           value=5,
@@ -369,7 +325,7 @@ class GameView:
                                           
         self.board_size_7_button = Button(color=self.LIGHT_GRAY, 
                                           x=0.8 * self.screen_size, 
-                                          y=0.7 * self.screen_size - 15, 
+                                          y=0.6 * self.screen_size - 15, 
                                           width=0.1 * self.screen_size, 
                                           height=30, 
                                           value=7,
@@ -417,8 +373,7 @@ class GameView:
         
         # Collect all buttons
         self.all_buttons.extend((self.settings_button, self.start_game_button, self.quit_game_button,
-                                 self.human_vs_human_button, self.human_vs_ai_button, 
-                                 self.ai_level_1_button, self.ai_level_2_button, self.ai_level_3_button,
+                                 self.human_vs_human_button, self.human_vs_ai_button,
                                  self.board_size_3_button, self.board_size_5_button, self.board_size_7_button,
                                  self.back_button,
                                  self.play_again_button, self.nomore_game_button))

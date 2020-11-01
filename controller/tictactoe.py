@@ -23,7 +23,7 @@ class TicTacToe:
         self.move_nr = 0
         self.player_list = []
         self.current_player = 0
-        self.settings = {'vs_computer': False, 'ai_level': 1, 'board_size': 3}
+        self.settings = {'vs_computer': False, 'board_size': 3}
 
         self.view = GameView()
 
@@ -72,22 +72,21 @@ class TicTacToe:
         """Get the selected settings by the user"""
         for button in self.view.all_buttons:
             group = button.group
-            if (group == 'vs_computer' or group == 'board_size' or group == 'ai_level') and button.selected:
+            if (group == 'vs_computer' or group == 'board_size') and button.selected:
                 self.settings[group] = button.value
 
 
     def update_settings(self, x, y):
         """Settings page.
         Determine what settings the user changes. The values that can be changed are: 
-        the opponent (human or AI), the level of the AI, and the size of the board 
-        (3x3, 5x5, or 7x7).
+        the opponent (human or AI), and the size of the board (3x3, 5x5, or 7x7).
         
         Args:
         - x: x-coordinate of mouse at click (in px)
         - y: y-coordinate of mouse at click (in px)
         """
 
-        button_groups = ['vs_computer', 'ai_level', 'board_size']
+        button_groups = ['vs_computer', 'board_size']
 
         # Check if button is clicked
         for button in self.view.all_buttons:
@@ -265,18 +264,17 @@ class TicTacToe:
         - y: y-coordinate of mouse at click (in px)
         """
         
+        self.winner = None
+        self.winning_tiles = []
+        self.win_combinations = []
+        self.player_list = []
+
+        self.move_nr = 0
+        self.current_player = 0
+        self.board.reset()
+
+        # Two options: directly start next game, or go back to main start screen
         if self.view.play_again_button.is_clicked(x, y):
-            self.play = True
-            self.winner = None
-            self.winning_tiles = []
-            self.win_combinations = []
-
-            self.move_nr = 0
-            self.player_list = []
-            self.current_player = 0
-
             self.status = 'start_screen'
-            self.board.reset()
         elif self.view.nomore_game_button.is_clicked(x, y):
             self.status = 'end_game'
-            self.play = False
