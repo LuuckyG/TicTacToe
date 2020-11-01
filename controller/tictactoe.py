@@ -149,27 +149,18 @@ class TicTacToe:
 
         if clicked_tile is not None:
             player = self.player_list[self.current_player]
-            clicked_tile.state = player.symbol
-
-            if player.symbol == 'X':
-                self.view.draw_x(clicked_tile)
-            elif player.symbol == 'O':
-                self.view.draw_o(clicked_tile)
-
+            player.make_move(clicked_tile, self.view)
             self.check_for_winner()
+
 
     def ai_move(self):
         """Let 'AI' make a random move as counter move"""
         ai = self.player_list[self.current_player]
-        if self.settings['ai_level'] == 1:
-            selected_tile = ai.make_random_move(self.board)
-        else:
-            # selected_tile = ai.make_good_move(self.board, level=self.settings['ai_level'])    #TODO
-            selected_tile = ai.make_random_move(self.board)
+        selected_tile = ai.chose_tile(self.board)
 
-        selected_tile.state = 'O'
         pygame.time.delay(500)
-        self.view.draw_o(selected_tile)
+        
+        ai.make_move(selected_tile, self.view)
         self.check_for_winner()
 
 
