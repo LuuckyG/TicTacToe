@@ -278,3 +278,4 @@ class TicTacToe:
             self.status = 'start_screen'
         elif self.view.nomore_game_button.is_clicked(x, y):
             self.status = 'end_game'
+            self.play = False
