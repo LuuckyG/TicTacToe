@@ -18,7 +18,7 @@ class Tile:
         self.state = state
         self.rect = pygame.Rect(x, y, size, size)
         
-        # Create little space (25%) for the circle radius
+        # Create little space (16,67%) for the circle radius
         self.radius = (self.size // 2) - (self.size // 6)
 
     def change_state(self, symbol):
