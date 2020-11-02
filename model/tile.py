@@ -27,6 +27,6 @@ class Tile:
         
         Args:
         - symbol: the symbol of the player (human or AI) that makes the move,
-                  can be either 'X' or 'O'.
+            can be either 'X' or 'O'.
         """
         self.state = symbol
