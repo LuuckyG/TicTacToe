@@ -5,23 +5,23 @@ class Board:
 
     def __init__(self, screen_size=540, board_size=3):
         """Set up of empty board of size `board_size ^ 2` (default = 3 ^ 2). 
-        Each tile on the board has a width in px (default = 180px) of `tile_size`."""
+        Each tile on the board has a width in px (default = 180px) of `tile_size`.
+        
+        Args:
+        - screen_size: the width of the game window (in px), default = 540px.
+        - board_size: the number of tiles on a row, column or diagonal of the board (default = 3).
+        """
 
-        self.board = []
-        self.empty_tiles = []
         self.screen_size = screen_size
         self.board_size = board_size
         self.tile_size = screen_size // board_size
         self.reset()
 
-    def empty_board(self):
-        """Reset the board to an empty board"""
-        self.board = []
-        self.empty_tiles = []
-
     def reset(self):
         """Create empty board, consisting of `board_size` * `board_size` tiles"""
-        self.empty_board()
+
+        self.board = []
+        self.empty_tiles = []
 
         for i in range(self.board_size):
             board_row = []
@@ -32,6 +32,12 @@ class Board:
             self.board.append(board_row)
         
     def get_tile_at_pos(self, x, y):
+        """"Get the empty tile at the mouse click location.
+        
+        Args:
+        - x: x-coordinate of mouse at click
+        - y: y-coordinate of mouse at click
+        """
         for rows in self.board:
             for tile in rows:
                 if tile.rect.collidepoint(x, y) and tile.state == 'empty':
