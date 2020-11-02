@@ -10,9 +10,9 @@ class TicTacToe:
     """Controller class of the game TicTacToe"""
 
     def __init__(self):
-        """Setup of game TicTacToe. All game variables, and the board and view
-        are created.
-        """
+        """Setup of game TicTacToe. All game state variables, and the 
+        view are created."""
+
         self.play = True
         self.status = 'start_screen'
 
@@ -22,14 +22,10 @@ class TicTacToe:
 
         self.move_nr = 0
         self.player_list = []
-        self.current_player = 0
+        self.current_player_nr = 0
         self.settings = {'vs_computer': False, 'board_size': 3}
 
         self.view = GameView()
-
-
-    def get_current_player(self):
-        return self.player_list[self.current_player]
 
 
     def process_click(self, x, y):
@@ -125,6 +121,7 @@ class TicTacToe:
             self.player_list.append(Player('O', 'human'))
         
         random.shuffle(self.player_list)
+        self.current_player = self.player_list[self.current_player_nr]
 
         # Change starting screen to TicTacToe board
         self.board = Board(screen_size=self.view.screen_size, 
@@ -133,8 +130,7 @@ class TicTacToe:
         self.win_conditions()
 
         self.view.draw_board(board=self.board)
-        player = self.get_current_player()
-        self.view.show_turn(player.symbol, len(self.board.empty_tiles))
+        self.view.show_turn(self.current_player.symbol, len(self.board.empty_tiles))
 
 
     def play_game(self, x, y):
@@ -151,28 +147,25 @@ class TicTacToe:
         clicked_tile = self.board.get_tile_at_pos(x, y)
 
         if clicked_tile is not None:
-            player = self.get_current_player()
-            player.make_move(clicked_tile, self.view)
+            self.current_player.make_move(clicked_tile, self.view)
             self.check_for_winner()
 
 
     def ai_move(self):
         """Let 'AI' make a random move as counter move"""
-        ai = self.get_current_player()
-        selected_tile = ai.chose_tile(self.board)
+        selected_tile = self.current_player.chose_tile(self.board)
 
         pygame.time.delay(500)
         
-        ai.make_move(selected_tile, self.view)
+        self.current_player.make_move(selected_tile, self.view)
         self.check_for_winner()
 
 
     def next_turn(self):
         """Set next player for next turn"""
-        player = self.get_current_player()
-        next_player = 'O' if player.symbol != 'O' else 'X'
-        self.current_player = 0 if self.move_nr % 2 == 0 else 1
-        self.view.show_turn(next_player, len(self.board.empty_tiles))
+        self.current_player_nr = 0 if self.move_nr % 2 == 0 else 1
+        self.current_player = self.player_list[self.current_player_nr]
+        self.view.show_turn(self.current_player.symbol, len(self.board.empty_tiles))
 
 
     def check_for_winner(self):
@@ -196,13 +189,7 @@ class TicTacToe:
 
 
     def check_win_conditions(self):
-        """Check for 2n + 2 win conditions and 1 draw condition.
-        *) n = board size
-
-        Example:
-        - board size = 3
-        - 3x horizontal, 3x vertical, 2x diagonal = 8 winconditions
-        """
+        """Check if a win conditions or the draw condition is met."""
     
         board = self.board.board
         board_size = self.board.board_size
@@ -234,7 +221,7 @@ class TicTacToe:
 
 
     def win_conditions(self):
-        """Add all indices of tiles together as winning combinations
+        """Add all indices of tiles together as winning combinations.
         There are 2n + 2 win conditions and 1 draw condition
 
         For a 3x3 board this would be: 8 win conditions
@@ -272,10 +259,10 @@ class TicTacToe:
         self.player_list = []
 
         self.move_nr = 0
-        self.current_player = 0
+        self.current_player_nr = 0
         self.board.reset()
 
-        # Two options: directly start next game, or go back to main start screen
+        # Two options: go back to main start screen, or quit the game
         if self.view.play_again_button.is_clicked(x, y):
             self.status = 'start_screen'
         elif self.view.nomore_game_button.is_clicked(x, y):

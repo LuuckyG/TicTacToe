@@ -30,7 +30,7 @@ def play():
 
             # During the game
             if getattr(tictactoe, 'status') == 'game':
-                player = tictactoe.get_current_player()
+                player = tictactoe.current_player
 
                 if getattr(player, 'player_type') == 'AI':
                     tictactoe.ai_move()
