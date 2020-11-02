@@ -49,7 +49,7 @@ class Button:
                                self.y + (self.height/2 - text.get_height()/2)))
 
     def is_hover(self, x, y):
-        """Check if you hover over the button. If so, bring the button into focus
+        """Check if you hover over the button. If so, bring the button into focus.
     
         Args:
         - x: the x-coordinate of the mouse
@@ -60,8 +60,7 @@ class Button:
         return False
     
     def is_clicked(self, x, y):
-        """Check if you a button is clicked. 
-        If so, return the settings, which the button simulates.
+        """Check if you a button is clicked.
     
         Args:
         - x: the x-coordinate of the mouse
