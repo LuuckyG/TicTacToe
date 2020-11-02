@@ -22,5 +22,5 @@ If yes, the user is taken back to the start screen. Else, the game is quit.
 
 
 ## Game images
-<img src="screenshots/startscreen.JPG" width="200"> <img src="screenshots/settings.JPG" width="200"> <img src="screenshots/board.JPG" width="200">
-<img src="screenshots/endgame.JPG" width="200"> <img src="screenshots/thanks.JPG" width="200">
+<img src="screenshots/startscreen.JPG" width="250"> <img src="screenshots/settings.JPG" width="250"> <img src="screenshots/board.JPG" width="250">
+<img src="screenshots/endgame.JPG" width="250"> <img src="screenshots/thanks.JPG" width="250">
