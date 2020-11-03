@@ -18,8 +18,7 @@ class GameView:
         """Set up of start screen
            
         Args:
-        - tile_size: width of the screen (in px)
-        - board: TicTacToe game board
+        - screen_size: width of the screen (in px)
         - border: border around game
         - line_width: Thickness of lines, for drawing the board and the symbols
         """    
