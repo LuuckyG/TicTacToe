@@ -1,6 +1,6 @@
 import pygame, os
 
-from model.button import Button
+from view.button import Button
 
 class GameView:
     """Class to make game view / GUI with pygame"""
